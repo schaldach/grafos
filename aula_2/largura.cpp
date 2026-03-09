@@ -19,51 +19,60 @@ using namespace std;
 
 int adj_matrix[node_size][node_size];
 
-void enfila(int* queue, int &queue_index, int value){
-    queue_index = queue_index+1;
-    queue[queue_index] = value;
-}
+struct queue{
+    int top_index;
+    int queue_elements[node_size];
 
-int desenfila(int* queue, int &queue_index ){
-    if(queue_index == -1) return -1;
-    if(queue_index == 0){
-        queue_index = queue_index-1;
-        return -1;
-    }
-    queue_index = queue_index-1;
-    
-    for(int i=1;i<=queue_index; i++){
-        queue[i-1] = queue[i];
-    }
-    
-    return( queue[0] );
-}
+    int get_first(){
+        if(top_index == 0) return -1;
+        int value = queue_elements[0];
 
-bool todos_visitados(int* queue_visitada){
+        for(int i=0;i<top_index-1; i++){
+            queue_elements[i] = queue_elements[i+1];
+        }
+
+        return value;
+    }
+
+    void enfila(int value){
+        queue_elements[top_index] = value;
+        top_index = top_index + 1;
+    }
+
+    void desenfila(){
+        if(top_index>0){
+            for(int i=0;i<top_index-1; i++){
+                queue_elements[i] = queue_elements[i+1];
+            }
+            top_index = top_index - 1;
+        }
+    }
+
+    void init(){
+        top_index = 0;
+    }
+};
+
+bool todos_visitados(int* lista_visitada){
     for(int i=0; i<node_size; i++){
-        if(queue_visitada[i] == 0) return false;
+        if(lista_visitada[i] == 0) return false;
     }
     return true;
 }
 
-int get_primeiro_nao_visitado(int* queue_visitada){
+int get_primeiro_nao_visitado(int* lista_visitada){
     for(int i=0; i<node_size; i++){
-        if(queue_visitada[i] == 0) return i;
+        if(lista_visitada[i] == 0) return i;
     }
     return -1;
 }
 
-void pegar_todos_adjacentes(int current_visited, int* visited_values, int* queue, int& queue_index){
+void pegar_todos_adjacentes(int current_visited, int* visited_values, queue& queue){
     for(int i=0; i<node_size; i++){
-        if(adj_matrix[current_visited][i] == 1 && visited_values[i] == 0) enfila(queue, queue_index, i);
+        if(adj_matrix[current_visited][i] == 1 && visited_values[i] == 0){
+            queue.enfila(i);
+        }
     }
-}
-
-void print_pilha(int* queue, int queue_index){
-    for(int i=0; i<=queue_index; i++){
-        cout << queue[i] << " - ";
-    }
-    cout << "\n";
 }
 
 int main()
@@ -109,23 +118,23 @@ int main()
     }
     cout << "\n";
 
-    int queue[node_size];
+    queue queue;
+    queue.init();
     int visited_values[node_size];
 
     for(int i=0; i<node_size; i++){
         visited_values[i] = 0;
     }
 
-    int queue_index = -1;
     int current_visited = get_primeiro_nao_visitado(visited_values);
-    enfila(queue, queue_index, current_visited);
     
     while(!todos_visitados(visited_values)){
         cout << current_visited << "\t";
         visited_values[current_visited] = 1;
         
-        pegar_todos_adjacentes(current_visited, visited_values, queue, queue_index);
-        int proximo_fila = desenfila(queue, queue_index);
+        pegar_todos_adjacentes(current_visited, visited_values, queue);
+        int proximo_fila = queue.get_first();
+        queue.desenfila();
         if(proximo_fila == -1){
             current_visited = get_primeiro_nao_visitado(visited_values);
         }
