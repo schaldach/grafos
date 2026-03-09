@@ -1,0 +1,1 @@
+usar "g++ -o hi hi.cpp" para compilar o código

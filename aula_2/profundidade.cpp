@@ -17,33 +17,41 @@ using namespace std;
 
 // {0,4}{4,0}{0,5}{5,0}{0,6}{6,0}{0,8}{8,0}{4,5}{5,4}{4,8}{8,4}{5,8}{8,5}{6,1}{1,6}{2,7}{7,2}{7,3}{3,7}
 
+struct stack{
+    int top_index;
+    int stack_elements[node_size];
+
+    int get_top(){
+        if(top_index == 0) return -1;
+        return stack_elements[top_index-1];
+    }
+
+    void empilha(int value){
+        stack_elements[top_index] = value;
+        top_index = top_index + 1;
+    }
+
+    void desempilha(){
+        if(top_index>0) top_index = top_index - 1;
+    }
+
+    void init(){
+        top_index = 0;
+    }
+};
+
 int adj_matrix[node_size][node_size];
 
-void empilha(int* stack, int &stack_index, int value){
-    stack_index = stack_index+1;
-    stack[stack_index] = value;
-}
-
-int desempilha(int* stack, int &stack_index ){
-    if(stack_index == -1) return -1;
-    if(stack_index == 0){
-        stack_index = stack_index-1;
-        return -1;
-    }
-    stack_index = stack_index-1;
-    return( stack[stack_index] );
-}
-
-bool todos_visitados(int* stack_visitada){
+bool todos_visitados(int* lista_visitada){
     for(int i=0; i<node_size; i++){
-        if(stack_visitada[i] == 0) return false;
+        if(lista_visitada[i] == 0) return false;
     }
     return true;
 }
 
-int get_primeiro_nao_visitado(int* stack_visitada){
+int get_primeiro_nao_visitado(int* lista_visitada){
     for(int i=0; i<node_size; i++){
-        if(stack_visitada[i] == 0) return i;
+        if(lista_visitada[i] == 0) return i;
     }
     return -1;
 }
@@ -53,13 +61,6 @@ int get_primeiro_adjacente(int row_index, int* visited_values){
         if(adj_matrix[row_index][i] == 1 && visited_values[i] == 0) return i;
     }
     return -1;
-}
-
-void print_pilha(int* stack, int stack_index){
-    for(int i=0; i<=stack_index; i++){
-        cout << stack[i] << " - ";
-    }
-    cout << "\n";
 }
 
 int main()
@@ -105,16 +106,16 @@ int main()
     }
     cout << "\n";
 
-    int stack[node_size];
+    stack stack_alg;
+    stack_alg.init();
     int visited_values[node_size];
 
     for(int i=0; i<node_size; i++){
         visited_values[i] = 0;
     }
 
-    int stack_index = -1;
     int current_visited = get_primeiro_nao_visitado(visited_values);
-    empilha(stack, stack_index, current_visited);
+    stack_alg.empilha(current_visited);
     
     while(!todos_visitados(visited_values)){
         int next_node = get_primeiro_adjacente(current_visited, visited_values);
@@ -125,14 +126,15 @@ int main()
             }
             visited_values[current_visited] = 1;
             current_visited = next_node;
-            empilha(stack, stack_index, current_visited);
+            stack_alg.empilha(current_visited);
         }
         else{
             if(visited_values[current_visited] == 0){
                 cout << current_visited << "\t";
             }
             visited_values[current_visited] = 1;
-            current_visited = desempilha(stack, stack_index);
+            stack_alg.desempilha();
+            current_visited = stack_alg.get_top();
             if(current_visited == -1){
                 current_visited = get_primeiro_nao_visitado(visited_values);
             }
