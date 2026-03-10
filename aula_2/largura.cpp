@@ -25,13 +25,7 @@ struct queue{
 
     int get_first(){
         if(top_index == 0) return -1;
-        int value = queue_elements[0];
-
-        for(int i=0;i<top_index-1; i++){
-            queue_elements[i] = queue_elements[i+1];
-        }
-
-        return value;
+        return queue_elements[0];
     }
 
     void enfila(int value){
@@ -46,6 +40,14 @@ struct queue{
             }
             top_index = top_index - 1;
         }
+    }
+
+    void print_queue(){
+        cout << "\n";
+        for(int i=0;i<top_index;i++){
+            cout << queue_elements[i] << " ";
+        }
+        cout << "\n";
     }
 
     void init(){
@@ -71,6 +73,8 @@ void pegar_todos_adjacentes(int current_visited, int* visited_values, queue& que
     for(int i=0; i<node_size; i++){
         if(adj_matrix[current_visited][i] == 1 && visited_values[i] == 0){
             queue.enfila(i);
+            visited_values[i] = 1;
+            cout << i << "\t";
         }
     }
 }
@@ -129,8 +133,10 @@ int main()
     int current_visited = get_primeiro_nao_visitado(visited_values);
     
     while(!todos_visitados(visited_values)){
-        cout << current_visited << "\t";
-        visited_values[current_visited] = 1;
+        if(visited_values[current_visited] == 0){
+            cout << current_visited << "\t";
+            visited_values[current_visited] = 1;
+        }    
         
         pegar_todos_adjacentes(current_visited, visited_values, queue);
         int proximo_fila = queue.get_first();
