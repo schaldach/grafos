@@ -277,7 +277,7 @@ int main()
                 }
             }
 
-            if(target_input >= 0 && (node_size < target_input && visited_values[target_input])){
+            if(target_input >= 0 && (target_input < node_size && visited_values[target_input])){
                 cout << "\nO vértice foi encontrado\n";
             }
             else{
