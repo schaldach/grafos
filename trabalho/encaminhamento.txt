@@ -1,0 +1,21 @@
+Aberto: sexta-feira, 13 mar 2026, 00:00
+Vencimento: sexta-feira, 27 mar 2026, 23:00
+
+Trabalho de Conectividade
+
+
+
+Fazer um programa que permita ao usuário fazer a especificação de um grafo, podendo ser dirigido ou não (usuário informa o grafo). Esse grafo deve ter opções para que sejam incluídos ou removidos vértices e arestas/arcos a qualquer momento.
+
+Permitir verificar a sequencia dos vértices do grafo percorrendo o grafo por profundidade (DFS) ou Largura (BFS).
+
+Permitir visualizar o fecho transitivo direto ou inverso de qualquer vértice do grafo.
+
+Saber se o grafo e conexo ou não. E caso não seja conexo quais são os subgrafos Fortemente conexos Máximos do grafo.
+
+Serão avaliados, o funcionamento correto do programa. Qualidade da interface, principalmente no que se refere a usabilidade (facilidade de interação do usuário). Cumprimento dos requisitos solicitados.
+
+OBS.: Deve ser entregue uma versão possível de ser executada sem dependências (em qualquer computador), junto com os fontes (um só arquivo compactado).
+
+-> Gravar um vídeo, com a demonstração do funcionamento do programa e explicação de como foi implementado. Deixar claro na apresentação todos os elementos necessários e como eles foram feitos. Toda a equipe deve participar do video.
+
