@@ -1,1 +1,1 @@
-usar "g++ -o hi hi.cpp" para compilar o código
+usar "g++ -o main arquivo.cpp" para compilar o código

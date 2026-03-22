@@ -42,6 +42,10 @@ struct queue{
         top_index = 0;
         queue_elements = new int[node_size];
     }
+
+    void delete_ptr(){
+        delete[] queue_elements;
+    }
 };
 
 struct stack{
@@ -65,6 +69,10 @@ struct stack{
     void init(int node_size){
         top_index = 0;
         stack_elements = new int[node_size];
+    }
+
+    void delete_ptr(){
+        delete[] stack_elements;
     }
 };
 
@@ -102,6 +110,10 @@ void pegar_todos_adjacentes(int current_visited, int* visited_values, queue& que
 int main()
 {
     string input_graphs;
+    int orientado = 0;
+
+    cout << "Digite 1 para um grafo orientado (arcos), e 0 para um grafo não orientado (arestas): ";
+    cin >> orientado;
     
     // exemplo: 
     cout << "Digite as conexões dos grafos: (primeiro todos os vértices presentes, depois as conexões)\nExemplo: {0,1,2,3,4}{0,4}{4,0}{4,3}{3,4}{2,1}{1,2}{0,3}{3,0}\n";
@@ -136,6 +148,9 @@ int main()
         }
         else{
             adj_matrix[first_index][current_number] = 1;
+            if(orientado == 0){
+                adj_matrix[current_number][first_index] = 1;
+            }
             first_index = -1;
         }
     }
@@ -157,10 +172,10 @@ int main()
 
     int input = 1;
     while(input != 0){
-        cout << "\nDigite 1 para percorrer por profundidade;\nDigite 2 para percorrer por largura;\nDigite 3 para procurar um vértice;\nDigite 0 para sair do programa: \n";
+        cout << "\nDigite 1 para percorrer por profundidade;\nDigite 2 para percorrer por largura;\nDigite 3 para procurar um vértice;\nDigite 4 para adicionar um vértice;\nDigite 5 para remover um vértice;\nDigite 6 para adicionar um arco/aresta;\nDigite 7 para remover um arco/aresta;\nDigite 0 para sair do programa: \n";
         cin >> input;
 
-        // Profundidade
+        // DFS
         if(input == 1){
             stack stack_alg;
             stack_alg.init(node_size);
@@ -196,9 +211,11 @@ int main()
                     }
                 }
             }
+
+            stack_alg.delete_ptr();
         }
 
-        // Largura 
+        // BFS 
         else if(input == 2){
             queue queue;
             queue.init(node_size);
@@ -226,9 +243,11 @@ int main()
                     current_visited = proximo_fila;
                 }
             }
+
+            queue.delete_ptr();
         }
 
-        // Busca
+        // Busca por vértice
         else if(input == 3){
             int target_input;
             cout << "Digite o vértice a ser encontrado: ";
@@ -275,6 +294,104 @@ int main()
             else{
                 cout << "\nO vértice não foi encontrado\n";
             }
+
+            stack_alg.delete_ptr();
+        }
+
+        // Adicionar vértice
+        else if(input == 4){
+            int new_node_size = node_size + 1;
+            int** new_adj_matrix = new int*[new_node_size];
+    
+            for(int i=0; i<new_node_size; i++){
+                new_adj_matrix[i] = new int[new_node_size];
+                for(int j=0; j<new_node_size; j++){
+                    new_adj_matrix[i][j] = 0;
+                }
+            }
+            // Copiando matriz antiga
+            for(int i=0; i<node_size; i++){
+                for(int j=0; j<node_size; j++){
+                    new_adj_matrix[i][j] = adj_matrix[i][j];
+                }
+            }
+
+            // Deletando matriz antiga
+            for(int i=0; i<node_size; i++){
+                delete[] adj_matrix[i];
+            }
+            delete[] adj_matrix;
+
+            node_size = new_node_size;
+            adj_matrix = new_adj_matrix;
+
+            cout << "\n";
+            for(int i=0; i<node_size; i++){
+                for(int j=0; j<node_size; j++){
+                    if(adj_matrix[i][j] == 0){
+                        cout << RED;
+                    }
+                    else{
+                        cout << GREEN;
+                    }
+                    cout << adj_matrix[i][j] << RESET << " ";
+                }
+                cout << "\n";
+            }
+            cout << "\n";
+        }
+
+        // Remover vértice
+        else if(input == 5 && node_size - 1 > 0){
+            int new_node_size = node_size - 1;
+            int** new_adj_matrix = new int*[new_node_size];
+    
+            for(int i=0; i<new_node_size; i++){
+                new_adj_matrix[i] = new int[new_node_size];
+                for(int j=0; j<new_node_size; j++){
+                    new_adj_matrix[i][j] = 0;
+                }
+            }
+            // Copiando matriz antiga
+            for(int i=0; i<new_node_size; i++){
+                for(int j=0; j<new_node_size; j++){
+                    new_adj_matrix[i][j] = adj_matrix[i][j];
+                }
+            }
+
+            // Deletando matriz antiga
+            for(int i=0; i<node_size; i++){
+                delete[] adj_matrix[i];
+            }
+            delete[] adj_matrix;
+
+            node_size = new_node_size;
+            adj_matrix = new_adj_matrix;
+
+            cout << "\n";
+            for(int i=0; i<node_size; i++){
+                for(int j=0; j<node_size; j++){
+                    if(adj_matrix[i][j] == 0){
+                        cout << RED;
+                    }
+                    else{
+                        cout << GREEN;
+                    }
+                    cout << adj_matrix[i][j] << RESET << " ";
+                }
+                cout << "\n";
+            }
+            cout << "\n";
+        }
+
+        // Adicionar arco/aresta
+        else if(input == 6){
+
+        }
+
+        // Remover arco/aresta
+        else if(input == 7){
+
         }
     }
 }
