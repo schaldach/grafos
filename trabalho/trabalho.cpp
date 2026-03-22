@@ -76,6 +76,23 @@ struct stack{
     }
 };
 
+void print_matrix(int node_size, int** adj_matrix){
+    cout << "\n";
+    for(int i=0; i<node_size; i++){
+        for(int j=0; j<node_size; j++){
+            if(adj_matrix[i][j] == 0){
+                cout << RED;
+            }
+            else{
+                cout << GREEN;
+            }
+            cout << adj_matrix[i][j] << RESET << " ";
+        }
+        cout << "\n";
+    }
+    cout << "\n";
+}
+
 int get_primeiro_adjacente(int row_index, int* visited_values, int** adj_matrix, int node_size){
     for(int i=0; i<node_size; i++){
         if(adj_matrix[row_index][i] == 1 && visited_values[i] == 0) return i;
@@ -155,24 +172,12 @@ int main()
         }
     }
     
-    cout << "\n";
-    for(int i=0; i<node_size; i++){
-        for(int j=0; j<node_size; j++){
-            if(adj_matrix[i][j] == 0){
-                cout << RED;
-            }
-            else{
-                cout << GREEN;
-            }
-            cout << adj_matrix[i][j] << RESET << " ";
-        }
-        cout << "\n";
-    }
-    cout << "\n";
+    print_matrix(node_size, adj_matrix);
 
     int input = 1;
     while(input != 0){
-        cout << "\nDigite 1 para percorrer por profundidade;\nDigite 2 para percorrer por largura;\nDigite 3 para procurar um vértice;\nDigite 4 para adicionar um vértice;\nDigite 5 para remover um vértice;\nDigite 6 para adicionar um arco/aresta;\nDigite 7 para remover um arco/aresta;\nDigite 0 para sair do programa: \n";
+        string orientado_str = orientado ? "Grafo Orientado" : "Grafo Não Orientado";
+        cout << "\nDigite 1 para percorrer por profundidade;\nDigite 2 para percorrer por largura;\nDigite 3 para procurar um vértice;\nDigite 4 para adicionar um vértice;\nDigite 5 para remover um vértice;\nDigite 6 para adicionar um arco/aresta;\nDigite 7 para remover um arco/aresta;\nDigite 8 para mudar a orientação (atual: " + orientado_str + ");\nDigite 9 para visualizar a matriz;\nDigite 0 para sair do programa: \n";
         cin >> input;
 
         // DFS
@@ -325,20 +330,7 @@ int main()
             node_size = new_node_size;
             adj_matrix = new_adj_matrix;
 
-            cout << "\n";
-            for(int i=0; i<node_size; i++){
-                for(int j=0; j<node_size; j++){
-                    if(adj_matrix[i][j] == 0){
-                        cout << RED;
-                    }
-                    else{
-                        cout << GREEN;
-                    }
-                    cout << adj_matrix[i][j] << RESET << " ";
-                }
-                cout << "\n";
-            }
-            cout << "\n";
+            print_matrix(node_size, adj_matrix);
         }
 
         // Remover vértice
@@ -368,30 +360,70 @@ int main()
             node_size = new_node_size;
             adj_matrix = new_adj_matrix;
 
-            cout << "\n";
-            for(int i=0; i<node_size; i++){
-                for(int j=0; j<node_size; j++){
-                    if(adj_matrix[i][j] == 0){
-                        cout << RED;
-                    }
-                    else{
-                        cout << GREEN;
-                    }
-                    cout << adj_matrix[i][j] << RESET << " ";
-                }
-                cout << "\n";
-            }
-            cout << "\n";
+            print_matrix(node_size, adj_matrix);
         }
 
         // Adicionar arco/aresta
         else if(input == 6){
+            string target_input;
+            cout << "Digite os arcos/arestas a serem adicionados (mesmo formato de inserção):\nExemplo: {0,4}{1,2}\n";
+            cin >> target_input;
 
+            int first_index = -1;
+            for(int i=0; i<target_input.length(); i++){
+                if(target_input[i] == ',' || target_input[i] == '{' || target_input[i] == '}') continue;
+                
+                int current_number = target_input[i] - '0';
+                if(first_index == -1){
+                    first_index = current_number;
+                }
+                else{
+                    adj_matrix[first_index][current_number] = 1;
+                    if(orientado == 0){
+                        adj_matrix[current_number][first_index] = 1;
+                    }
+                    first_index = -1;
+                }
+            }
+
+            print_matrix(node_size, adj_matrix);
         }
 
         // Remover arco/aresta
         else if(input == 7){
+            string target_input;
+            cout << "Digite os arcos/arestas a serem removidos (mesmo formato de inserção):\nExemplo: {0,4}{1,2}\n";
+            cin >> target_input;
 
+            int first_index = -1;
+            for(int i=0; i<target_input.length(); i++){
+                if(target_input[i] == ',' || target_input[i] == '{' || target_input[i] == '}') continue;
+                
+                int current_number = target_input[i] - '0';
+                if(first_index == -1){
+                    first_index = current_number;
+                }
+                else{
+                    adj_matrix[first_index][current_number] = 0;
+                    if(orientado == 0){
+                        adj_matrix[current_number][first_index] = 0;
+                    }
+                    first_index = -1;
+                }
+            }
+
+            print_matrix(node_size, adj_matrix);
+        }
+
+        // Mudar simetria
+        else if(input == 8){
+            if(orientado == 0) orientado = 1;
+            else orientado = 0;
+        }
+
+        // Visualizar matriz
+        else if(input == 9){
+            print_matrix(node_size, adj_matrix);
         }
     }
 }
