@@ -426,4 +426,6 @@ int main()
             print_matrix(node_size, adj_matrix);
         }
     }
+
+    // máximo: retorna o máximo (todos incluídos) de vértices naquele subgrafo fortemente conexo do grafo
 }
