@@ -124,6 +124,15 @@ void pegar_todos_adjacentes(int current_visited, int* visited_values, queue& que
     }
 }
 
+int get_next_of_level(bool* are_visited_values, int* visited_levels, int level, int node_size){
+    for(int i=0; i<node_size; i++){
+        if(!are_visited_values[i] && visited_levels[i] == level){
+            return i;
+        }
+    }
+    return -1;
+}
+
 int main()
 {
     string input_graphs;
@@ -177,7 +186,7 @@ int main()
     int input = 1;
     while(input != 0){
         string orientado_str = orientado ? "Grafo Orientado" : "Grafo Não Orientado";
-        cout << "\nDigite 1 para percorrer por profundidade;\nDigite 2 para percorrer por largura;\nDigite 3 para procurar um vértice;\nDigite 4 para adicionar um vértice;\nDigite 5 para remover um vértice;\nDigite 6 para adicionar um arco/aresta;\nDigite 7 para remover um arco/aresta;\nDigite 8 para mudar a orientação (atual: " + orientado_str + ");\nDigite 9 para visualizar a matriz;\nDigite 0 para sair do programa: \n";
+        cout << "\nDigite 1 para percorrer por profundidade;\nDigite 2 para percorrer por largura;\nDigite 3 para procurar um vértice;\nDigite 4 para adicionar um vértice;\nDigite 5 para remover um vértice;\nDigite 6 para adicionar um arco/aresta;\nDigite 7 para remover um arco/aresta;\nDigite 8 para mudar a orientação (atual: " + orientado_str + ");\nDigite 9 para visualizar a matriz;\nDigite 10 para visualizar o fecho transitivo direto de um vértice;\nDigite 11 para visualizar o fecho transitivo inverso de um vértice;\nDigite 0 para sair do programa: \n";
         cin >> input;
 
         // DFS
@@ -424,6 +433,106 @@ int main()
         // Visualizar matriz
         else if(input == 9){
             print_matrix(node_size, adj_matrix);
+        }
+
+        // Fecho transitivo direto
+        else if(input == 10){
+            int target_input;
+            cout << "Digite o vértice a ser mostrado o fecho transitivo direto: ";
+            cin >> target_input;
+
+            if(target_input>=node_size || target_input < 0){
+                cout << "\nVértice não existente;\n";
+            }
+            else{
+                int visited_levels[node_size];
+                bool are_visited_values[node_size];
+                for(int i=0; i<node_size; i++){
+                    visited_levels[i] = -1;
+                    are_visited_values[i] = false;
+                }
+                visited_levels[target_input] = 0;
+
+                int current_level = 0;
+                int current_target = target_input;
+
+                while(current_target>=0){
+                    are_visited_values[current_target] = true;
+
+                    for(int i=0; i<node_size; i++){
+                        // o are_visited_values é apenas para achar o próximo a ser procurado,
+                        // mas para marcar o nível, temos que ver antes, se o valor dele já está marcado no levels ou não
+                        // (senão ele iria aumentar o nível precipitadamente, sem ter "visitado" os nodos)
+                        if(adj_matrix[current_target][i] == 1 && visited_levels[i] == -1){
+                            visited_levels[i] = current_level+1;
+                        }
+                    }
+
+                    current_target = get_next_of_level(are_visited_values, visited_levels, current_level, node_size);
+                    if(current_target == -1){
+                        current_level = current_level+1;
+                        current_target = get_next_of_level(are_visited_values, visited_levels, current_level, node_size);
+                    }
+                }
+
+                for(int i=0; i<node_size; i++){
+                    cout << i << "\t";
+                }
+                cout << "\n";
+                for(int i=0; i<node_size; i++){
+                    cout << visited_levels[i] << "\t";
+                }
+            }
+        }
+
+        // Fecho transitivo inverso
+        else if(input == 11){
+            int target_input;
+            cout << "Digite o vértice a ser mostrado o fecho transitivo inverso: ";
+            cin >> target_input;
+
+            if(target_input>=node_size || target_input < 0){
+                cout << "\nVértice não existente;\n";
+            }
+            else{
+                int visited_levels[node_size];
+                bool are_visited_values[node_size];
+                for(int i=0; i<node_size; i++){
+                    visited_levels[i] = -1;
+                    are_visited_values[i] = false;
+                }
+                visited_levels[target_input] = 0;
+
+                int current_level = 0;
+                int current_target = target_input;
+
+                while(current_target>=0){
+                    are_visited_values[current_target] = true;
+
+                    for(int i=0; i<node_size; i++){
+                        // o are_visited_values é apenas para achar o próximo a ser procurado,
+                        // mas para marcar o nível, temos que ver antes, se o valor dele já está marcado no levels ou não
+                        // (senão ele iria aumentar o nível precipitadamente, sem ter "visitado" os nodos)
+                        if(adj_matrix[i][current_target] == 1 && visited_levels[i] == -1){
+                            visited_levels[i] = current_level+1;
+                        }
+                    }
+
+                    current_target = get_next_of_level(are_visited_values, visited_levels, current_level, node_size);
+                    if(current_target == -1){
+                        current_level = current_level+1;
+                        current_target = get_next_of_level(are_visited_values, visited_levels, current_level, node_size);
+                    }
+                }
+
+                for(int i=0; i<node_size; i++){
+                    cout << i << "\t";
+                }
+                cout << "\n";
+                for(int i=0; i<node_size; i++){
+                    cout << visited_levels[i] << "\t";
+                }
+            }
         }
     }
 
