@@ -5,7 +5,7 @@ using namespace std;
 #define RED     "\033[31m"      /* Red */
 #define GREEN   "\033[32m"      /* Green */
 
-// {0,1,2,3,4,5,6,7,8}{0,4}{4,0}{0,5}{5,0}{0,6}{6,0}{0,8}{8,0}{4,5}{5,4}{4,8}{8,4}{5,8}{8,5}{6,1}{1,6}{2,7}{7,2}{7,3}{3,7}
+// {0,1,2,3,4,5,6,7,8}{4,0}{5,0}{6,0}{8,0}{5,4}{8,4}{8,5}{1,6}{7,2}{3,7}
 
 struct queue{
     int top_index;
@@ -201,7 +201,7 @@ int main()
     int input = 1;
     while(input != 0){
         string orientado_str = orientado ? "Grafo Orientado" : "Grafo Não Orientado";
-        cout << "\nDigite 1 para percorrer por profundidade;\nDigite 2 para percorrer por largura;\nDigite 3 para procurar um vértice;\nDigite 4 para adicionar um vértice;\nDigite 5 para remover um vértice;\nDigite 6 para adicionar um arco/aresta;\nDigite 7 para remover um arco/aresta;\nDigite 8 para mudar a orientação (atual: " + orientado_str + ");\nDigite 9 para visualizar a matriz;\nDigite 10 para visualizar o fecho transitivo direto de um vértice;\nDigite 11 para visualizar o fecho transitivo inverso de um vértice;\nDigite 12 para saber se o grafo é conexo ou não, e ver os subgrafos conexos máximos\nDigite 0 para sair do programa: \n";
+        cout << "\n 1 = percorrer por profundidade (DFS);\n 2 = percorrer por largura (BFS);\n 3 = procurar um vértice;\n 4 = adicionar um vértice;\n 5 = remover um vértice;\n 6 = adicionar um arco/aresta;\n 7 = remover um arco/aresta;\n 8 = mudar a orientação (atual: " + orientado_str + ");\n 9 = visualizar a matriz;\n 10 = visualizar o fecho transitivo direto de um vértice;\n 11 = visualizar o fecho transitivo inverso de um vértice;\n 12 = saber se o grafo é conexo ou não, e ver os subgrafos conexos máximos;\n 0 = sair do programa: \n";
         cin >> input;
 
         // DFS
