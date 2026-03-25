@@ -133,6 +133,21 @@ int get_next_of_level(bool* are_visited_values, int* visited_levels, int level, 
     return -1;
 }
 
+int get_next_explorar(bool* vertices_explorados, int node_size){
+    for(int i=0; i<node_size; i++){
+        if(!vertices_explorados[i]) return i;
+    }
+    return -1;
+}
+
+int get_valid_values(int* levels, int node_size){
+    int i=0;
+    for(int y=0;y<node_size; y++){
+        if(levels[y] != -1) i = i+1;
+    }
+    return i;
+}
+
 int main()
 {
     string input_graphs;
@@ -186,7 +201,7 @@ int main()
     int input = 1;
     while(input != 0){
         string orientado_str = orientado ? "Grafo Orientado" : "Grafo Não Orientado";
-        cout << "\nDigite 1 para percorrer por profundidade;\nDigite 2 para percorrer por largura;\nDigite 3 para procurar um vértice;\nDigite 4 para adicionar um vértice;\nDigite 5 para remover um vértice;\nDigite 6 para adicionar um arco/aresta;\nDigite 7 para remover um arco/aresta;\nDigite 8 para mudar a orientação (atual: " + orientado_str + ");\nDigite 9 para visualizar a matriz;\nDigite 10 para visualizar o fecho transitivo direto de um vértice;\nDigite 11 para visualizar o fecho transitivo inverso de um vértice;\nDigite 0 para sair do programa: \n";
+        cout << "\nDigite 1 para percorrer por profundidade;\nDigite 2 para percorrer por largura;\nDigite 3 para procurar um vértice;\nDigite 4 para adicionar um vértice;\nDigite 5 para remover um vértice;\nDigite 6 para adicionar um arco/aresta;\nDigite 7 para remover um arco/aresta;\nDigite 8 para mudar a orientação (atual: " + orientado_str + ");\nDigite 9 para visualizar a matriz;\nDigite 10 para visualizar o fecho transitivo direto de um vértice;\nDigite 11 para visualizar o fecho transitivo inverso de um vértice;\nDigite 12 para saber se o grafo é conexo ou não, e ver os subgrafos conexos máximos\nDigite 0 para sair do programa: \n";
         cin >> input;
 
         // DFS
@@ -532,6 +547,107 @@ int main()
                 for(int i=0; i<node_size; i++){
                     cout << visited_levels[i] << "\t";
                 }
+            }
+        }
+
+        // Conexo, ou subgrafos fortemente conexos máximos
+        else if(input == 12){
+            bool vertices_explorados[node_size];
+             for(int i=0; i<node_size; i++){
+                vertices_explorados[i] = false;
+            }
+
+            int vertice_origem = get_next_explorar(vertices_explorados, node_size);
+            bool first_iteration = true;
+            bool is_conexo = false;
+
+            while(vertice_origem != -1){
+
+                // fecho transitivo inverso
+                int visited_levels_inverso[node_size];
+                bool are_visited_values[node_size];
+                for(int i=0; i<node_size; i++){
+                    visited_levels_inverso[i] = -1;
+                    are_visited_values[i] = false;
+                }
+                visited_levels_inverso[vertice_origem] = 0;
+
+                int current_level = 0;
+                int current_target = vertice_origem;
+
+                while(current_target>=0){
+                    are_visited_values[current_target] = true;
+
+                    for(int i=0; i<node_size; i++){
+                        if(adj_matrix[i][current_target] == 1 && visited_levels_inverso[i] == -1){
+                            visited_levels_inverso[i] = current_level+1;
+                        }
+                    }
+
+                    current_target = get_next_of_level(are_visited_values, visited_levels_inverso, current_level, node_size);
+                    if(current_target == -1){
+                        current_level = current_level+1;
+                        current_target = get_next_of_level(are_visited_values, visited_levels_inverso, current_level, node_size);
+                    }
+                }
+
+                // fecho transitivo direto
+                int visited_levels[node_size];
+                for(int i=0; i<node_size; i++){
+                    visited_levels[i] = -1;
+                    are_visited_values[i] = false;
+                }
+                visited_levels[vertice_origem] = 0;
+
+                current_level = 0;
+                current_target = vertice_origem;
+
+                while(current_target>=0){
+                    are_visited_values[current_target] = true;
+
+                    for(int i=0; i<node_size; i++){
+                        if(adj_matrix[current_target][i] == 1 && visited_levels[i] == -1){
+                            visited_levels[i] = current_level+1;
+                        }
+                    }
+
+                    current_target = get_next_of_level(are_visited_values, visited_levels, current_level, node_size);
+                    if(current_target == -1){
+                        current_level = current_level+1;
+                        current_target = get_next_of_level(are_visited_values, visited_levels, current_level, node_size);
+                    }
+                }
+
+                if(first_iteration){
+                    if(get_valid_values(visited_levels, node_size) == get_valid_values(visited_levels_inverso, node_size) && get_valid_values(visited_levels, node_size) == node_size){
+                        cout << "É conexo\n";
+                        is_conexo = true;
+                    }
+                    else{
+                        cout << "Não é conexo\n";
+                    }
+                    first_iteration = false;
+                }
+
+                // fazer intersecção (no array visited_levels)
+                for(int i=0; i<node_size; i++){
+                    if(visited_levels[i] != -1 && visited_levels_inverso[i] != -1){
+                        visited_levels[i] = 1;
+                        vertices_explorados[i] = true;
+                    }
+                    else{
+                        visited_levels[i] = 0;
+                    }
+                }
+
+                if(is_conexo) cout << "Grafo fortemente conexo: ";
+                else cout << "Subgrafo fortemente conexo máximo: ";
+                for(int i=0; i<node_size; i++){
+                    if(visited_levels[i] == 1) cout << i << "\t";
+                }
+                cout << "\n";
+
+                vertice_origem = get_next_explorar(vertices_explorados, node_size);
             }
         }
     }
