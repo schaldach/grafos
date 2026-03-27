@@ -220,19 +220,16 @@ int main()
             while(!todos_visitados(visited_values, node_size)){
                 int next_node = get_primeiro_adjacente(current_visited, visited_values, adj_matrix, node_size);
 
+                if(visited_values[current_visited] == 0){
+                    cout << current_visited << "\t";
+                }
+                visited_values[current_visited] = 1;
+
                 if(next_node != -1){
-                    if(visited_values[current_visited] == 0){
-                        cout << current_visited << "\t";
-                    }
-                    visited_values[current_visited] = 1;
                     current_visited = next_node;
                     stack_alg.empilha(current_visited);
                 }
                 else{
-                    if(visited_values[current_visited] == 0){
-                        cout << current_visited << "\t";
-                    }
-                    visited_values[current_visited] = 1;
                     stack_alg.desempilha();
                     current_visited = stack_alg.get_top();
                     if(current_visited == -1){
