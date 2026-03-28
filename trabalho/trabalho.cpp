@@ -208,7 +208,7 @@ int main()
         if(input == 1){
             stack stack_alg;
             stack_alg.init(node_size);
-            int visited_values[node_size];
+            int* visited_values = new int[node_size];
 
             for(int i=0; i<node_size; i++){
                 visited_values[i] = 0;
@@ -238,6 +238,7 @@ int main()
                 }
             }
 
+            delete [] visited_values;
             stack_alg.delete_ptr();
         }
 
@@ -245,7 +246,7 @@ int main()
         else if(input == 2){
             queue queue;
             queue.init(node_size);
-            int visited_values[node_size];
+            int* visited_values = new int[node_size];
 
             for(int i=0; i<node_size; i++){
                 visited_values[i] = 0;
@@ -270,6 +271,7 @@ int main()
                 }
             }
 
+            delete [] visited_values;
             queue.delete_ptr();
         }
 
@@ -281,7 +283,7 @@ int main()
 
             stack stack_alg;
             stack_alg.init(node_size);
-            int visited_values[node_size];
+            int* visited_values = new int[node_size];
 
             for(int i=0; i<node_size; i++){
                 visited_values[i] = 0;
@@ -321,6 +323,7 @@ int main()
                 cout << "\nO vértice não foi encontrado\n";
             }
 
+            delete [] visited_values;
             stack_alg.delete_ptr();
         }
 
@@ -457,8 +460,8 @@ int main()
                 cout << "\nVértice não existente;\n";
             }
             else{
-                int visited_levels[node_size];
-                bool are_visited_values[node_size];
+                int* visited_levels = new int[node_size];
+                bool* are_visited_values = new bool[node_size];
                 for(int i=0; i<node_size; i++){
                     visited_levels[i] = -1;
                     are_visited_values[i] = false;
@@ -494,6 +497,9 @@ int main()
                 for(int i=0; i<node_size; i++){
                     cout << visited_levels[i] << "\t";
                 }
+
+                delete [] visited_levels;
+                delete [] are_visited_values;
             }
         }
 
@@ -507,8 +513,8 @@ int main()
                 cout << "\nVértice não existente;\n";
             }
             else{
-                int visited_levels[node_size];
-                bool are_visited_values[node_size];
+                int* visited_levels = new int[node_size];
+                bool* are_visited_values = new bool[node_size];
                 for(int i=0; i<node_size; i++){
                     visited_levels[i] = -1;
                     are_visited_values[i] = false;
@@ -544,12 +550,15 @@ int main()
                 for(int i=0; i<node_size; i++){
                     cout << visited_levels[i] << "\t";
                 }
+
+                delete [] visited_levels;
+                delete [] are_visited_values;
             }
         }
 
         // Conexo, ou subgrafos fortemente conexos máximos
         else if(input == 12){
-            bool vertices_explorados[node_size];
+            bool* vertices_explorados = new bool[node_size];
              for(int i=0; i<node_size; i++){
                 vertices_explorados[i] = false;
             }
@@ -561,8 +570,8 @@ int main()
             while(vertice_origem != -1){
 
                 // fecho transitivo inverso
-                int visited_levels_inverso[node_size];
-                bool are_visited_values[node_size];
+                int* visited_levels_inverso = new int[node_size];
+                bool* are_visited_values = new bool[node_size];
                 for(int i=0; i<node_size; i++){
                     visited_levels_inverso[i] = -1;
                     are_visited_values[i] = false;
@@ -589,7 +598,7 @@ int main()
                 }
 
                 // fecho transitivo direto
-                int visited_levels[node_size];
+                int* visited_levels = new int[node_size];
                 for(int i=0; i<node_size; i++){
                     visited_levels[i] = -1;
                     are_visited_values[i] = false;
@@ -645,7 +654,11 @@ int main()
                 cout << "\n";
 
                 vertice_origem = get_next_explorar(vertices_explorados, node_size);
+                delete [] visited_levels_inverso;
+                delete [] visited_levels;
+                delete [] are_visited_values;
             }
+            delete [] vertices_explorados;
         }
     }
 
