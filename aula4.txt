@@ -1,0 +1,17 @@
+kn -> grafo simples(?) completo, totalmente conectado
+kn,n -> grafo bipartido, onde cada n é o tamanho do conjunto
+apenas precisamos checar k3,3 e k5 porque são meio que as unidades fundamentais que impedem de ser planares. um k6 contém um k5, por exemplo
+k1 até k4 são planares
+
+planar = nenhuma aresta se cruza
+
+verificar pela fórmula v-e+r = 2 
+v = vértice
+e = aresta
+r = regiões (faces, incluindo o lado de fora)
+se ela for verdadeira, é planar, senão, não é planar
+
+e <= 3v - 6 (quando existe um ciclo de comprimento 3)
+e <= 2v - 4 (quando não existe ciclo de comprimento 3)
+
+ciclo = termina e começa no mesmo vértice
